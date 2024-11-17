@@ -29,13 +29,15 @@ public class Game {
 
     public void playTurn() {
         Player currentPlayer = getCurrentPlayer();
-        if (currentPlayer.isInJail()) {
-            handleJail(currentPlayer);
+        if (currentPlayer.getMoney() < 0) {
+            players.remove(currentPlayer); // Remove bankrupt players
         } else {
-            takeTurn(currentPlayer);
+            // Simulate the player's turn (e.g., rolling dice, moving, landing on a square)
+            System.out.println(currentPlayer.getName() + " is playing their turn.");
         }
-        checkBankruptcy(currentPlayer);
-        nextPlayer();
+
+        // Move to the next player
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     }
 
     private void takeTurn(Player player) {
@@ -164,7 +166,7 @@ public class Game {
     }
     public List<Player> getWinner() {
         int maxMoney = players.stream().mapToInt(Player::getMoney).max().orElse(0);
-        return players.stream().filter(p -> p.getMoney() == maxMoney).collect(Collectors.toList());
+        return players.stream().filter(p -> p.getMoney() == maxMoney).toList();
     }
 
     public boolean isGameOver() {

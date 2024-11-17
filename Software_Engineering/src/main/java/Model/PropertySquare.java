@@ -35,6 +35,9 @@ public class PropertySquare extends Square {
             System.out.println(player.getName() + " paid HKD " + rent + " rent to " + owner.getName());
         } else if (!isOwned()) {
             System.out.println(getName() + " is available for purchase at HKD " + price);
+        } else {
+            System.out.println("You own this property.");
         }
     }
+
 }
