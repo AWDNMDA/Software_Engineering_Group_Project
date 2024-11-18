@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
-    private List<Square> squares;
+    private final List<Square> squares;
 
     public Board() {
         squares = new ArrayList<>();

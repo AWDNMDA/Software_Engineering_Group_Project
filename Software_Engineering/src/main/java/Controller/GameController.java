@@ -18,16 +18,13 @@ public class GameController {
         System.out.println();
         view.displayBoard(game.getBoard());
         while (!game.isGameOver()) {
-            playTurn();
+            playRound();
         }
         declareWinner();
     }
 
-    private void playTurn() {
-        int currentRound = game.getRoundCount();
-        Player currentPlayer = game.getCurrentPlayer();
-        view.displayPlayerTurn(currentRound, currentPlayer);
-
+    private void playRound() {
+        view.displayPlayerTurn(game.getRoundCount(), game.getCurrentPlayer());
         game.playTurn();
         view.displayGameStatus(game.getPlayers());
     }

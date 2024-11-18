@@ -11,7 +11,9 @@ public class Display {
     }
 
     public void displayBoard(Board board) {
-        System.out.println("Monopoly Board:");
+        System.out.println("==================================================");
+        System.out.println("                  Monopoly Board                  ");
+        System.out.println("==================================================");
         for (int i = 0; i < board.getTotalSquares(); i++) {
             Square square = board.getSquare(i);
             System.out.println(i + ": " + square.getName());
