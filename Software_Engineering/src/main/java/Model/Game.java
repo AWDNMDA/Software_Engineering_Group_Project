@@ -62,6 +62,7 @@ public class Game {
 
     private void takeTurn(Player player) {
         System.out.println(player.getName() + ", it's your turn. Press Enter to roll the dice.");
+        scanner.nextLine();
         int diceRoll = rollDice();
         System.out.println(player.getName() + " rolled " + diceRoll);
         movePlayer(player, diceRoll);
