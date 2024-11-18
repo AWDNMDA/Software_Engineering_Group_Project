@@ -148,13 +148,13 @@ public class Game {
     }
 
     int rollDice() {
-        return random.nextInt(5) + 1 + random.nextInt(5) + 1;
+        return random.nextInt(6) + 1 + random.nextInt(6) + 1;
     }
 
     private void rollForDoubles(Player player) {
         System.out.println(player.getName() + " is rolling for doubles...");
-        int die1 = random.nextInt(5) + 1;
-        int die2 = random.nextInt(5) + 1;
+        int die1 = random.nextInt(6) + 1;
+        int die2 = random.nextInt(6) + 1;
 
         System.out.println("You rolled a " + die1 + " and a " + die2);
         if (die1 == die2) {

@@ -72,11 +72,15 @@ class GameTest {
 
     @Test
     void testLandingOnChanceSquare() {
-        Player alice = players.get(0);
-        alice.setPosition(7); // Chance Square
-        when(mockedRandom.nextInt(31)).thenReturn(10); // Random amount (10 * 10 = 100)
+        Random mockedRandom = mock(Random.class);
+        ChanceSquare chanceSquare = new ChanceSquare("Chance", mockedRandom);
+
+        when(mockedRandom.nextInt(31)).thenReturn(9); // Amount: (9 + 1) * 10 = 100
         when(mockedRandom.nextBoolean()).thenReturn(true); // Gain money
-        board.getSquare(alice.getPosition()).landOn(alice);
+
+        Player alice = players.get(0);
+        chanceSquare.landOn(alice);
+
         assertEquals(1600, alice.getMoney(), "Alice's money should increase by HKD 100 after landing on Chance.");
     }
 
