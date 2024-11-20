@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
-    private String name;
+    private final String name;
     private int money;
     private int position;
     private boolean inJail;
@@ -34,8 +34,6 @@ public class Player {
     public List<PropertySquare> getProperties(){return properties;}
     public int getJailTurns(){return jailTurns;}
 
-
-    public void setName(String name) { this.name = name; }
     public void setMoney(int money) { this.money = money; }
     public void setPosition(int position) { this.position = position; }
     public void setInJail(boolean inJail) { this.inJail = inJail; }

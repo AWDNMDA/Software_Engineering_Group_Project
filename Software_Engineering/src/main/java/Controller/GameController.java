@@ -83,15 +83,15 @@ public class GameController {
             try {
                 System.out.print("Enter the number of players (2-6): ");
                 numPlayers = scanner.nextInt();
-                scanner.nextLine(); // Clear the newline
+                scanner.nextLine();
                 if (numPlayers >= 2 && numPlayers <= 6) {
                     break;
                 } else {
                     System.out.println("Please enter a valid number between 2 and 6.");
                 }
-            } catch (InputMismatchException e) {
+            } catch (Exception e) {
                 System.out.println("Invalid input. Please enter a number between 2 and 6.");
-                scanner.nextLine(); // Clear the invalid input
+                scanner.nextLine();
             }
         }
         return numPlayers;

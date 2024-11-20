@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
-    private List<Square> squares;
+    private final List<Square> squares;
 
     public Board() {
         squares = new ArrayList<>();
@@ -17,7 +17,16 @@ public class Board {
         squares.add(new PropertySquare("Wan Chai", 700, 65));
         squares.add(new IncomeTaxSquare("Income Tax"));
         squares.add(new PropertySquare("Stanley", 600, 60));
-        squares.add(new GoToJailSquare("In Jail"));
+        squares.add(new Square("In Jail/Just Visiting") {
+            @Override
+            public void landOn(Player player) {
+                if (player.isInJail()) {
+                    System.out.println(player.getName() + " is in Jail.");
+                } else {
+                    System.out.println(player.getName() + " is just visiting Jail.");
+                }
+            }
+        });
 
         squares.add(new PropertySquare("Shek O", 400, 10));
         squares.add(new PropertySquare("Mong Kok", 500, 40));
@@ -29,7 +38,7 @@ public class Board {
         squares.add(new ChanceSquare("Chance"));
         squares.add(new PropertySquare("Tuen Mun", 400, 20));
         squares.add(new PropertySquare("Tai Po", 500, 25));
-        squares.add(new GoToJailSquare("Go To Jail"));
+        squares.add(new GoToJailSquare("Go To Jail", 5));
 
         squares.add(new PropertySquare("Sai Kung", 400, 10));
         squares.add(new PropertySquare("Yuen Long", 400, 25));

@@ -1,7 +1,7 @@
 package Model;
 
 public abstract class Square {
-    private String name;
+    private final String name;
 
     public Square(String name) {
         this.name = name;

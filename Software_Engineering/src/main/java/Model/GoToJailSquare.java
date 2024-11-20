@@ -1,13 +1,16 @@
 package Model;
 
 public class GoToJailSquare extends Square {
-    public GoToJailSquare(String name) {
+    private final int jailPosition;
+
+    public GoToJailSquare(String name, int jailPosition) {
         super(name);
+        this.jailPosition = jailPosition;
     }
 
     @Override
     public void landOn(Player player) {
-        player.setPosition(5);
+        player.setPosition(jailPosition);
         player.setInJail(true);
         System.out.println(player.getName() + " goes to Jail.");
     }
