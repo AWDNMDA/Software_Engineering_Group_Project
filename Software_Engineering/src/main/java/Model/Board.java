@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
-    private final List<Square> squares;
+    private List<Square> squares;
 
     public Board() {
         squares = new ArrayList<>();
@@ -12,30 +12,31 @@ public class Board {
     }
 
     private void initializeSquares() {
-        squares.add(SquareBuilder.createSquare("Go", "Go"));
-        squares.add(SquareBuilder.createSquare("Property", "Central", 800, 90));
-        squares.add(SquareBuilder.createSquare("IncomeTax", "Income Tax"));
-        squares.add(SquareBuilder.createSquare("Property", "Wan Chai", 700, 65));
-        squares.add(SquareBuilder.createSquare("FreeParking", "Free Parking"));
-        squares.add(SquareBuilder.createSquare("GoToJail", "Go To Jail"));
-        squares.add(SquareBuilder.createSquare("Property", "Stanley", 600, 60));
-        squares.add(SquareBuilder.createSquare("Chance", "Chance"));
-        squares.add(SquareBuilder.createSquare("Property", "Shek O", 400, 10));
-        squares.add(SquareBuilder.createSquare("Property", "Mong Kok", 500, 40));
-        squares.add(SquareBuilder.createSquare("Property", "Tsing Yi", 400, 15));
-        squares.add(SquareBuilder.createSquare("Chance", "Chance"));
-        squares.add(SquareBuilder.createSquare("Property", "Shatin", 700, 75));
-        squares.add(SquareBuilder.createSquare("Property", "Tuen Mun", 400, 20));
-        squares.add(SquareBuilder.createSquare("Property", "Tai Po", 500, 25));
-        squares.add(SquareBuilder.createSquare("Property", "Sai Kung", 400, 10));
-        squares.add(SquareBuilder.createSquare("Property", "Yuen Long", 400, 25));
-        squares.add(SquareBuilder.createSquare("Property", "Tai O", 600, 25));
-        squares.add(SquareBuilder.createSquare("FreeParking", "Free Parking"));
-        squares.add(SquareBuilder.createSquare("Chance", "Chance"));
+        squares.add(new GoSquare("Go"));
+        squares.add(new PropertySquare("Central", 800, 90));
+        squares.add(new PropertySquare("Wan Chai", 700, 65));
+        squares.add(new IncomeTaxSquare("Income Tax"));
+        squares.add(new PropertySquare("Stanley", 600, 60));
+        squares.add(new GoToJailSquare("In Jail"));
+
+        squares.add(new PropertySquare("Shek O", 400, 10));
+        squares.add(new PropertySquare("Mong Kok", 500, 40));
+        squares.add(new ChanceSquare("Chance"));
+        squares.add(new PropertySquare("Tsing Yi", 400, 15));
+        squares.add(new FreeParkingSquare("Free Parking"));
+
+        squares.add(new PropertySquare("Shatin", 700, 75));
+        squares.add(new ChanceSquare("Chance"));
+        squares.add(new PropertySquare("Tuen Mun", 400, 20));
+        squares.add(new PropertySquare("Tai Po", 500, 25));
+        squares.add(new GoToJailSquare("Go To Jail"));
+
+        squares.add(new PropertySquare("Sai Kung", 400, 10));
+        squares.add(new PropertySquare("Yuen Long", 400, 25));
+        squares.add(new ChanceSquare("Chance"));
+        squares.add(new PropertySquare("Tai O", 600, 25));
     }
 
-    public Square getSquare(int position) {
-        return squares.get(position % squares.size());
-    }
+    public Square getSquare(int position) { return squares.get(position); }
     public int getTotalSquares() { return squares.size(); }
 }

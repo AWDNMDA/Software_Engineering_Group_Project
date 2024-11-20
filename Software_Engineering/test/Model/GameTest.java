@@ -107,7 +107,7 @@ class GameTest {
         Player alice = players.get(0);
         alice.setInJail(true);
         when(mockedScanner.nextLine()).thenReturn("F");
-        when(mockedRandom.nextInt(6)).thenReturn(3, 3); // Dice rolls: 4 and 4 (doubles)
+        when(mockedRandom.nextInt(6)).thenReturn(1, 1); // Dice rolls: 4 and 4 (doubles)
         game.playTurn();
         assertFalse(alice.isInJail(), "Alice should be released from jail after rolling doubles.");
     }
