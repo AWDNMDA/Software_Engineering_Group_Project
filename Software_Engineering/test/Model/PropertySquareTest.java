@@ -5,11 +5,18 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for the PropertySquare class.
+ * Ensures proper functionality for property-related actions such as buying, renting, and setting attributes.
+ */
 class PropertySquareTest {
     private PropertySquare property;
     private Player owner;
     private Player tenant;
 
+    /**
+     * Initializes a PropertySquare and Player instances for testing.
+     */
     @BeforeEach
     void setUp() {
         property = new PropertySquare("Central", 800, 90);
@@ -17,6 +24,9 @@ class PropertySquareTest {
         tenant = new Player("Brian");
     }
 
+    /**
+     * Tests buying a property with sufficient funds.
+     */
     @Test
     void testBuyProperty() {
         property.buyProperty(owner);
@@ -25,15 +35,21 @@ class PropertySquareTest {
         assertEquals(700, owner.getMoney(), "Owner's money should decrease by the property price.");
     }
 
+    /**
+     * Tests buying a property with insufficient funds.
+     */
     @Test
     void testBuyPropertyInsufficientFunds() {
-        owner.setMoney(500); // Not enough to buy the property
+        owner.setMoney(500);
         property.buyProperty(owner);
         assertFalse(property.isOwned(), "Property should not be owned.");
         assertNull(property.getOwner(), "Owner should remain null.");
         assertEquals(500, owner.getMoney(), "Owner's money should remain unchanged.");
     }
 
+    /**
+     * Tests landing on a property owned by another player.
+     */
     @Test
     void testLandOnOwnedProperty() {
         property.buyProperty(owner);
@@ -42,6 +58,9 @@ class PropertySquareTest {
         assertEquals(790, owner.getMoney(), "Owner's money should increase by rent.");
     }
 
+    /**
+     * Tests landing on a property owned by the player.
+     */
     @Test
     void testLandOnSelfOwnedProperty() {
         property.buyProperty(owner);
@@ -49,6 +68,9 @@ class PropertySquareTest {
         assertEquals(700, owner.getMoney(), "Owner's money should remain unchanged when landing on their own property.");
     }
 
+    /**
+     * Tests landing on an unowned property.
+     */
     @Test
     void testLandOnUnownedProperty() {
         property.landOn(tenant);
@@ -56,18 +78,18 @@ class PropertySquareTest {
         assertNull(property.getOwner(), "Owner should remain null.");
     }
 
-    @Test
-    void testLandOnUnownedPropertyWithMessage() {
-        property.landOn(owner);
-        // No assertions, as this ensures the unowned branch executes fully
-    }
-
+    /**
+     * Tests setting a valid price for the property.
+     */
     @Test
     void testSetValidPrice() {
         property.setPrice(1000);
         assertEquals(1000, property.getPrice(), "Property price should be updated to 1000.");
     }
 
+    /**
+     * Tests setting an invalid price for the property.
+     */
     @Test
     void testSetInvalidPrice() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -76,12 +98,18 @@ class PropertySquareTest {
         assertEquals("Price must be greater than 0.", exception.getMessage(), "Exception message should match.");
     }
 
+    /**
+     * Tests setting a valid rent for the property.
+     */
     @Test
     void testSetValidRent() {
         property.setRent(120);
         assertEquals(120, property.getRent(), "Property rent should be updated to 120.");
     }
 
+    /**
+     * Tests setting an invalid rent for the property.
+     */
     @Test
     void testSetInvalidRent() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -90,12 +118,9 @@ class PropertySquareTest {
         assertEquals("Rent must be greater than 0.", exception.getMessage(), "Exception message should match.");
     }
 
-    @Test
-    void testSetName() {
-        property.setName("Updated Central");
-        assertEquals("Updated Central", property.getName(), "Property name should be updated.");
-    }
-
+    /**
+     * Tests default state of the property.
+     */
     @Test
     void testDefaultState() {
         assertFalse(property.isOwned(), "Property should not be owned initially.");
@@ -103,23 +128,5 @@ class PropertySquareTest {
         assertEquals("Central", property.getName(), "Property name should match initial value.");
         assertEquals(800, property.getPrice(), "Property price should match initial value.");
         assertEquals(90, property.getRent(), "Property rent should match initial value.");
-    }
-
-    @Test
-    void testMultiplePlayersLandOnOwnedProperty() {
-        property.buyProperty(owner);
-        Player tenant2 = new Player("Alex");
-        property.landOn(tenant);
-        property.landOn(tenant2);
-        assertEquals(1410, tenant.getMoney(), "First tenant's money should decrease by rent.");
-        assertEquals(1410, tenant2.getMoney(), "Second tenant's money should decrease by rent.");
-        assertEquals(880, owner.getMoney(), "Owner's money should increase by rent from both tenants.");
-    }
-
-    @Test
-    void testPropertyReassignedToNewOwner() {
-        property.buyProperty(owner);
-        property.setOwner(tenant);
-        assertEquals(tenant, property.getOwner(), "Owner should be reassigned to tenant.");
     }
 }

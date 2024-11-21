@@ -4,6 +4,10 @@ import Model.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Display class is responsible for rendering the game interface and
+ * providing visual feedback to players, such as the board, player status, and results.
+ */
 public class Display {
     // Text Colors
     public static final String RESET = "\u001B[0m";
@@ -22,17 +26,24 @@ public class Display {
     public static final String WHITE_BACKGROUND = "\u001B[47m";
     public static final String ORANGE_BACKGROUND = "\u001B[48;2;255;165;0m";
 
+    /**
+     * Displays the welcome message at the start of the game.
+     */
     public void displayWelcomeMessage() {
         System.out.println("==================================================");
         System.out.println("             Welcome to Monopoly Game             ");
         System.out.println("==================================================");
     }
 
+    /**
+     * Displays the entire game board with all squares.
+     * @param board The game board to be displayed.
+     */
     public void displayBoard(Board board) {
         int totalSquares = board.getTotalSquares();
         int sideLength = (totalSquares - 4) / 4;
-        int squareWidth = 14;  // Adjust width here
-        int squareHeight = 4;  // Adjust height here
+        int squareWidth = 14;
+        int squareHeight = 4;
 
         System.out.println("=".repeat(squareWidth * (sideLength + 2)));
 
@@ -55,9 +66,20 @@ public class Display {
         System.out.println();
     }
 
+    /**
+     * Prints a row of squares, either the top or bottom of the board.
+     * @param board        The game board.
+     * @param start        Starting index of the squares.
+     * @param end          Ending index of the squares.
+     * @param squareWidth  Width of each square.
+     * @param squareHeight Height of each square.
+     * @param totalSquares Total number of squares on the board.
+     * @param sideLength   Length of one side of the square board.
+     * @param isReversed   If true, print squares in reverse order.
+     */
     private void printRow(Board board, int start, int end, int squareWidth, int squareHeight, int totalSquares, int sideLength, boolean isReversed) {
         int numSquares = Math.abs(end - start) + 1;
-        String[][] coloredCells = new String[numSquares][squareHeight + 2]; // Include borders
+        String[][] coloredCells = new String[numSquares][squareHeight + 2];
 
         for (int i = 0; i < numSquares; i++) {
             int index = isReversed ? start - i : start + i;
@@ -74,6 +96,17 @@ public class Display {
         }
     }
 
+    /**
+     * Prints the middle rows of the board, containing the left and right columns.
+     * @param left         Left square in the row.
+     * @param right        Right square in the row.
+     * @param squareWidth  Width of each square.
+     * @param squareHeight Height of each square.
+     * @param leftIndex    Index of the left square.
+     * @param rightIndex   Index of the right square.
+     * @param totalSquares Total number of squares on the board.
+     * @param sideLength   Length of one side of the square board.
+     */
     private void printMiddleRow(Square left, Square right, int squareWidth, int squareHeight, int leftIndex, int rightIndex, int totalSquares, int sideLength) {
         String[] leftCell = fillCell(getColorForSquare(left, leftIndex, totalSquares, sideLength), left.getName(), squareWidth, squareHeight, left);
         String[] rightCell = fillCell(getColorForSquare(right, rightIndex, totalSquares, sideLength), right.getName(), squareWidth, squareHeight, right);
@@ -90,10 +123,19 @@ public class Display {
         }
     }
 
-    private String[] fillCell(String color, String text, int squareWidth, int squareHeight, Square square) {
-        String[] cell = new String[squareHeight + 2]; // Add 2 for top and bottom borders
-        String border = BLACK_TEXT + "+" + "-".repeat(squareWidth - 2) + "+" + RESET; // Top/bottom border
-        String sideBorder = BLACK_TEXT + "|" + RESET; // Side borders for content
+    /**
+     * Fills a square's content with borders and formatting.
+     * @param color        The background and text color.
+     * @param text         The text to display on the square.
+     * @param squareWidth  Width of the square.
+     * @param squareHeight Height of the square.
+     * @param square       The square object for additional details (e.g., price).
+     * @return An array of strings representing the square's content.
+     */
+    String[] fillCell(String color, String text, int squareWidth, int squareHeight, Square square) {
+        String[] cell = new String[squareHeight + 2];
+        String border = BLACK_TEXT + "+" + "-".repeat(squareWidth - 2) + "+" + RESET;
+        String sideBorder = BLACK_TEXT + "|" + RESET;
 
         // Top border
         cell[0] = border;
@@ -103,18 +145,13 @@ public class Display {
         if (text != null && !text.isEmpty()) {
             contentLines.addAll(wrapText(text, squareWidth - 4));
         }
-
         if (square instanceof PropertySquare property) {
             contentLines.addAll(wrapText("Price: " + property.getPrice(), squareWidth - 4));
             contentLines.addAll(wrapText("Rent: " + property.getRent(), squareWidth - 4));
         }
-
-        // Ensure contentLines doesn't exceed the square height
         while (contentLines.size() < squareHeight) {
-            contentLines.add(""); // Add empty lines to fill remaining space
+            contentLines.add("");
         }
-
-        // Content rows
         for (int i = 1; i <= squareHeight; i++) {
             String content = i <= contentLines.size() ? centerAlignText(contentLines.get(i - 1), squareWidth - 4) : " ".repeat(squareWidth - 4);
             cell[i] = String.format("%s%s %-"+ (squareWidth - 4) +"s %s%s", sideBorder, color, content, RESET, sideBorder);
@@ -122,13 +159,13 @@ public class Display {
 
         // Bottom border
         cell[squareHeight + 1] = border;
-
         return cell;
     }
 
-
-
-    private String centerAlignText(String text, int width) {
+    /**
+     * Centers text within a given width.
+     */
+    String centerAlignText(String text, int width) {
         if (text.length() > width) {
             // Truncate text if it exceeds the width
             return text.substring(0, width);
@@ -137,13 +174,16 @@ public class Display {
         return " ".repeat(padding) + text + " ".repeat(width - padding - text.length());
     }
 
-    private List<String> wrapText(String text, int width) {
+    /**
+     * Wraps text to fit within a specified width.
+     */
+    List<String> wrapText(String text, int width) {
         List<String> wrapped = new ArrayList<>();
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
 
         for (String word : words) {
-            if (line.length() + word.length() + 1 <= width) {
+            if (line.length() + word.length() + 1 <= width || line.isEmpty() && word.length() == width) {
                 if (!line.isEmpty()) {
                     line.append(" ");
                 }
@@ -153,7 +193,6 @@ public class Display {
                 line = new StringBuilder(word);
             }
         }
-
         if (!line.isEmpty()) {
             wrapped.add(line.toString());
         }
@@ -161,8 +200,10 @@ public class Display {
         return wrapped;
     }
 
-
-    private String getColorForSquare(Square square, int index, int totalSquares, int sideLength) {
+    /**
+     * Determines the appropriate color for a square based on its type.
+     */
+    String getColorForSquare(Square square, int index, int totalSquares, int sideLength) {
         String name = square.getName().toLowerCase();
 
         if (name.contains("chance")) {
@@ -182,6 +223,9 @@ public class Display {
         return RESET;
     }
 
+    /**
+     * Displays the current player's turn information.
+     */
     public void displayPlayerTurn(int round, Player player) {
         System.out.println("==================================================");
         System.out.printf("                   Round %d                     \n\n", round);
@@ -191,6 +235,9 @@ public class Display {
         System.out.println("==================================================");
     }
 
+    /**
+     * Displays the game's status, including all players' positions and money.
+     */
     public void displayGameStatus(List<Player> players) {
         System.out.println();
         System.out.println("==================================================");
@@ -204,11 +251,17 @@ public class Display {
         }
     }
 
+    /**
+     * Displays saved customed boards.
+     */
     public void displaySavedBoards() {
         System.out.println("Displaying all saved boards:");
         BoardSaver.displayBoards();
     }
 
+    /**
+     * Displays the winner(s) of the game.
+     */
     public void displayWinner(List<Player> winners) {
         System.out.println("==================================================");
         if (winners.size() == 1) {

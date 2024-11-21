@@ -5,10 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Utility class for managing the saving and loading of game boards.
+ * This class allows users to save boards, display saved boards, load specific boards,
+ * and manage the saved board files.
+ */
 public class BoardSaver {
     private static final String SAVE_DIRECTORY = "boards/";
     private static final String DEFAULT_FILENAME = "board_v";
 
+    // Static initializer block to ensure the save directory exists
     static {
         File dir = new File(SAVE_DIRECTORY);
         if (!dir.exists() && !dir.mkdir()) {
@@ -17,10 +23,9 @@ public class BoardSaver {
     }
 
     /**
-     * Save a board with a user-defined or auto-generated name.
-     *
-     * @param board  The board to save.
-     * @param name   Optional name for the file; if null, generates a unique name.
+     * Saves a board to a file with a specified or auto-generated name.
+     * @param board The board to save.
+     * @param name  Optional name for the file. If null or blank, a unique name is generated.
      */
     public static void saveBoard(Board board, String name) {
         String filename = name != null && !name.isBlank()
@@ -36,7 +41,7 @@ public class BoardSaver {
     }
 
     /**
-     * Display all saved boards.
+     * Displays all saved board files.
      */
     public static void displayBoards() {
         List<String> savedBoards = getSavedBoardFiles();
@@ -52,19 +57,17 @@ public class BoardSaver {
     }
 
     /**
-     * Check if any saved boards exist.
-     *
-     * @return True if saved boards are available, otherwise false.
+     * Checks if there are any saved boards.
+     * @return True if saved boards exist, otherwise false.
      */
     public static boolean hasSavedBoards() {
         return !getSavedBoardFiles().isEmpty();
     }
 
     /**
-     * Get a saved board by index.
-     *
-     * @param index The index of the board.
-     * @return The selected board, or a default board if the index is invalid.
+     * Retrieves a saved board by its index.
+     * @param index The index of the saved board.
+     * @return The loaded board, or a default board if the index is invalid.
      */
     public static Board getBoard(int index) {
         List<String> savedBoards = getSavedBoardFiles();
@@ -79,10 +82,9 @@ public class BoardSaver {
     }
 
     /**
-     * Load a saved board based on user input.
-     *
+     * Loads a board based on user input.
      * @param scanner The scanner for user input.
-     * @return The selected or default board.
+     * @return The loaded board or a default board if no saved boards are available.
      */
     public static Board loadBoard(Scanner scanner) {
         List<String> savedBoards = getSavedBoardFiles();
@@ -94,30 +96,14 @@ public class BoardSaver {
         displayBoards();
         System.out.println("Enter the number of the board to load:");
         int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
         return getBoard(choice);
     }
 
     /**
-     * Clear all saved boards.
-     */
-    public static void clearSavedBoards() {
-        File dir = new File(SAVE_DIRECTORY);
-        File[] files = dir.listFiles((d, name) -> name.endsWith(".dat"));
-        if (files != null) {
-            for (File file : files) {
-                if (!file.delete()) {
-                    System.out.println("Failed to delete file: " + file.getName());
-                }
-            }
-        }
-    }
-
-    /**
-     * Helper method to load a board from a file.
-     *
+     * Loads a board from a specific file.
      * @param filename The filename of the board to load.
-     * @return The loaded board, or null if an error occurs.
+     * @return The loaded board, or a default board if an error occurs.
      */
     private static Board loadBoard(String filename) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(SAVE_DIRECTORY + filename))) {
@@ -129,9 +115,8 @@ public class BoardSaver {
     }
 
     /**
-     * List all saved board files.
-     *
-     * @return A list of saved board filenames.
+     * Retrieves a list of all saved board files.
+     * @return A list of filenames of saved boards.
      */
     private static List<String> getSavedBoardFiles() {
         File dir = new File(SAVE_DIRECTORY);
@@ -140,8 +125,7 @@ public class BoardSaver {
     }
 
     /**
-     * Generate a unique filename based on the current time.
-     *
+     * Generates a unique filename based on the current timestamp.
      * @return A unique filename string.
      */
     private static String generateUniqueFilename() {
