@@ -1,4 +1,3 @@
-/*
 package Model;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +15,7 @@ class BoardSaverTest {
 
     @BeforeEach
     void setUp() {
+        BoardSaver.clearSavedBoards();
         board = new Board();
         mockedScanner = mock(Scanner.class);
 
@@ -75,4 +75,4 @@ class BoardSaverTest {
         assertEquals("Go", loadedBoard.getSquare(0).getName(), "Default board should have 'Go' at position 0.");
     }
 }
-*/
+

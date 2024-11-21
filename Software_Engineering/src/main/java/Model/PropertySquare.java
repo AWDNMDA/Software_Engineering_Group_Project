@@ -18,6 +18,7 @@ public class PropertySquare extends Square {
     public int getRent() { return this.rent; }
 
     public void setName(String name) { super.setName(name); }
+    public void setOwner(Player owner) { this.owner = owner; }
     public void setPrice(int price) {
         if (price > 0) {
             this.price = price;
@@ -56,4 +57,5 @@ public class PropertySquare extends Square {
             System.out.println("You own this property.");
         }
     }
+
 }

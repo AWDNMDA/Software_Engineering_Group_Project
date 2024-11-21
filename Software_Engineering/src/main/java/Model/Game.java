@@ -87,7 +87,30 @@
             roundCount++;
         }
 
-        private void checkBankruptcy() { players.removeIf(player -> player.getMoney() < 0); }
+        void checkBankruptcy() {
+            List<Player> bankruptPlayers = players.stream()
+                    .filter(player -> player.getMoney() < 0)
+                    .toList();
+
+            for (Player bankruptPlayer : bankruptPlayers) {
+                System.out.println("Processing bankruptcy for: " + bankruptPlayer.getName());
+                // Reset ownership of properties
+                for (Square square : board.getSquares()) {
+                    if (square instanceof PropertySquare property && bankruptPlayer.equals(property.getOwner())) {
+                        property.setOwner(null);
+                        System.out.println("Reset ownership for: " + property.getName());
+                    }
+                }
+
+                System.out.println("Removing player: " + bankruptPlayer.getName());
+                players.remove(bankruptPlayer);
+            }
+        }
+
+
+
+
+
 
 
         private void handleProperty(Player player, PropertySquare propertySquare) {

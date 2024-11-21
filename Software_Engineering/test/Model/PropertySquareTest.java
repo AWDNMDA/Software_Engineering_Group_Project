@@ -57,6 +57,12 @@ class PropertySquareTest {
     }
 
     @Test
+    void testLandOnUnownedPropertyWithMessage() {
+        property.landOn(owner);
+        // No assertions, as this ensures the unowned branch executes fully
+    }
+
+    @Test
     void testSetValidPrice() {
         property.setPrice(1000);
         assertEquals(1000, property.getPrice(), "Property price should be updated to 1000.");
@@ -97,5 +103,23 @@ class PropertySquareTest {
         assertEquals("Central", property.getName(), "Property name should match initial value.");
         assertEquals(800, property.getPrice(), "Property price should match initial value.");
         assertEquals(90, property.getRent(), "Property rent should match initial value.");
+    }
+
+    @Test
+    void testMultiplePlayersLandOnOwnedProperty() {
+        property.buyProperty(owner);
+        Player tenant2 = new Player("Alex");
+        property.landOn(tenant);
+        property.landOn(tenant2);
+        assertEquals(1410, tenant.getMoney(), "First tenant's money should decrease by rent.");
+        assertEquals(1410, tenant2.getMoney(), "Second tenant's money should decrease by rent.");
+        assertEquals(880, owner.getMoney(), "Owner's money should increase by rent from both tenants.");
+    }
+
+    @Test
+    void testPropertyReassignedToNewOwner() {
+        property.buyProperty(owner);
+        property.setOwner(tenant);
+        assertEquals(tenant, property.getOwner(), "Owner should be reassigned to tenant.");
     }
 }

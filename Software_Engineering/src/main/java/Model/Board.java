@@ -9,7 +9,7 @@ public class Board implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final List<Square> squares;
+    private List<Square> squares;
 
     public Board() {
         squares = new ArrayList<>();
@@ -59,5 +59,9 @@ public class Board implements Serializable {
 
     public List<Square> getSquares() {
         return squares;
+    }
+
+    public void setSquares(List<Square> squares) {
+        this.squares = squares;
     }
 }

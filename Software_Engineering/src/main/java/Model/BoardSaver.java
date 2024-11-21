@@ -11,8 +11,8 @@ public class BoardSaver {
 
     static {
         File dir = new File(SAVE_DIRECTORY);
-        if (!dir.exists()) {
-            dir.mkdir(); // Create directory if it doesn't exist
+        if (!dir.exists() && !dir.mkdir()) {
+            System.out.println("Failed to create save directory.");
         }
     }
 
@@ -31,7 +31,7 @@ public class BoardSaver {
             oos.writeObject(board);
             System.out.println("Board saved successfully as: " + filename);
         } catch (IOException e) {
-            System.out.println("Error saving board: " + e.getMessage());
+            System.err.println("Error saving board: " + e.getMessage());
         }
     }
 
@@ -99,6 +99,21 @@ public class BoardSaver {
     }
 
     /**
+     * Clear all saved boards.
+     */
+    public static void clearSavedBoards() {
+        File dir = new File(SAVE_DIRECTORY);
+        File[] files = dir.listFiles((d, name) -> name.endsWith(".dat"));
+        if (files != null) {
+            for (File file : files) {
+                if (!file.delete()) {
+                    System.out.println("Failed to delete file: " + file.getName());
+                }
+            }
+        }
+    }
+
+    /**
      * Helper method to load a board from a file.
      *
      * @param filename The filename of the board to load.
@@ -108,8 +123,8 @@ public class BoardSaver {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(SAVE_DIRECTORY + filename))) {
             return (Board) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error loading board: " + e.getMessage());
-            return null;
+            System.err.println("Error loading board: " + e.getMessage());
+            return new Board();
         }
     }
 

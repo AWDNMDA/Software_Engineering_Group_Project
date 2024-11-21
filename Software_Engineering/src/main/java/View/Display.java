@@ -1,6 +1,7 @@
 package View;
 import Model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Display {
@@ -30,40 +31,42 @@ public class Display {
     public void displayBoard(Board board) {
         int totalSquares = board.getTotalSquares();
         int sideLength = (totalSquares - 4) / 4;
-        int squareWidth = 14;
+        int squareWidth = 14;  // Adjust width here
+        int squareHeight = 4;  // Adjust height here
 
         System.out.println("=".repeat(squareWidth * (sideLength + 2)));
 
-        // Top row (first to sideLength + 1 squares)
-        printRow(board, 0, sideLength + 1, squareWidth, totalSquares, sideLength, false);
+        // Top row
+        printRow(board, 0, sideLength + 1, squareWidth, squareHeight, totalSquares, sideLength, false);
 
-        // Middle rows (squares on left and right sides)
+        // Middle rows
         for (int i = 0; i < sideLength; i++) {
             int leftIndex = totalSquares - 1 - i;
             int rightIndex = sideLength + 2 + i;
             printMiddleRow(
-                    board.getSquare(leftIndex), board.getSquare(rightIndex), squareWidth,
-                    leftIndex, rightIndex, totalSquares, sideLength);
+                    board.getSquare(leftIndex), board.getSquare(rightIndex),
+                    squareWidth, squareHeight, leftIndex, rightIndex, totalSquares, sideLength
+            );
         }
 
-        // Bottom row (squares 16 to 11 in reverse order)
-        printRow(board, sideLength * 3 + 3, sideLength * 2 + 2, squareWidth, totalSquares, sideLength, true);
+        // Bottom row
+        printRow(board, sideLength * 3 + 3, sideLength * 2 + 2, squareWidth, squareHeight, totalSquares, sideLength, true);
         System.out.println("=".repeat(squareWidth * (sideLength + 2)));
         System.out.println();
     }
 
-    private void printRow(Board board, int start, int end, int squareWidth, int totalSquares, int sideLength, boolean isReversed) {
+    private void printRow(Board board, int start, int end, int squareWidth, int squareHeight, int totalSquares, int sideLength, boolean isReversed) {
         int numSquares = Math.abs(end - start) + 1;
-        String[][] coloredCells = new String[numSquares][5]; // Each cell now has 5 lines
+        String[][] coloredCells = new String[numSquares][squareHeight + 2]; // Include borders
 
         for (int i = 0; i < numSquares; i++) {
             int index = isReversed ? start - i : start + i;
             String color = getColorForSquare(board.getSquare(index), index, totalSquares, sideLength);
-            coloredCells[i] = fillCell(color, board.getSquare(index).getName(), squareWidth);
+            coloredCells[i] = fillCell(color, board.getSquare(index).getName(), squareWidth, squareHeight, board.getSquare(index));
         }
 
-        // Print each row of the cells
-        for (int line = 0; line < 5; line++) { // Now includes borders
+        // Print each line of the row
+        for (int line = 0; line < squareHeight + 2; line++) {
             for (String[] coloredCell : coloredCells) {
                 System.out.print(coloredCell[line]);
             }
@@ -71,69 +74,93 @@ public class Display {
         }
     }
 
-    private void printMiddleRow(Square left, Square right, int squareWidth, int leftIndex, int rightIndex, int totalSquares, int sideLength) {
-        String[] leftCell = fillCell(getColorForSquare(left, leftIndex, totalSquares, sideLength), left.getName(), squareWidth);
-        String[] rightCell = fillCell(getColorForSquare(right, rightIndex, totalSquares, sideLength), right.getName(), squareWidth);
+    private void printMiddleRow(Square left, Square right, int squareWidth, int squareHeight, int leftIndex, int rightIndex, int totalSquares, int sideLength) {
+        String[] leftCell = fillCell(getColorForSquare(left, leftIndex, totalSquares, sideLength), left.getName(), squareWidth, squareHeight, left);
+        String[] rightCell = fillCell(getColorForSquare(right, rightIndex, totalSquares, sideLength), right.getName(), squareWidth, squareHeight, right);
 
         // Print only top border for the first row
         if (leftIndex != totalSquares - 1 && rightIndex != sideLength + 2)
             System.out.printf("%-" + squareWidth + "s%" + (squareWidth * 4) + "s%-" + squareWidth + "s%n",
-                leftCell[0], "", rightCell[0]);
+                    leftCell[0], "", rightCell[0]);
 
-        // Print content rows
-        for (int line = 1; line <= 3; line++) {
+        // Print rows
+        for (int line = 1; line <= squareHeight; line++) {
             System.out.printf("%-" + squareWidth + "s%" + (squareWidth * 4) + "s%-" + squareWidth + "s%n",
                     leftCell[line], "", rightCell[line]);
         }
     }
 
-    private String[] fillCell(String color, String text, int squareWidth) {
-        String[] cell = new String[5];
+    private String[] fillCell(String color, String text, int squareWidth, int squareHeight, Square square) {
+        String[] cell = new String[squareHeight + 2]; // Add 2 for top and bottom borders
         String border = BLACK_TEXT + "+" + "-".repeat(squareWidth - 2) + "+" + RESET; // Top/bottom border
         String sideBorder = BLACK_TEXT + "|" + RESET; // Side borders for content
 
         // Top border
         cell[0] = border;
 
-        // Content with side borders and color
-        String[] wrappedText = wrapText(text, squareWidth - 4, 3); // Adjusted width for borders
-        for (int i = 1; i <= 3; i++) {
-            String content = i <= wrappedText.length ? wrappedText[i - 1] : " ".repeat(squareWidth - 4);
+        // Prepare content to be displayed
+        List<String> contentLines = new ArrayList<>();
+        if (text != null && !text.isEmpty()) {
+            contentLines.addAll(wrapText(text, squareWidth - 4));
+        }
+
+        if (square instanceof PropertySquare property) {
+            contentLines.addAll(wrapText("Price: " + property.getPrice(), squareWidth - 4));
+            contentLines.addAll(wrapText("Rent: " + property.getRent(), squareWidth - 4));
+        }
+
+        // Ensure contentLines doesn't exceed the square height
+        while (contentLines.size() < squareHeight) {
+            contentLines.add(""); // Add empty lines to fill remaining space
+        }
+
+        // Content rows
+        for (int i = 1; i <= squareHeight; i++) {
+            String content = i <= contentLines.size() ? centerAlignText(contentLines.get(i - 1), squareWidth - 4) : " ".repeat(squareWidth - 4);
             cell[i] = String.format("%s%s %-"+ (squareWidth - 4) +"s %s%s", sideBorder, color, content, RESET, sideBorder);
         }
 
         // Bottom border
-        cell[4] = border;
+        cell[squareHeight + 1] = border;
 
         return cell;
     }
 
-    private String[] wrapText(String text, int width, int maxLines) {
-        String[] wrapped = new String[maxLines];
+
+
+    private String centerAlignText(String text, int width) {
+        if (text.length() > width) {
+            // Truncate text if it exceeds the width
+            return text.substring(0, width);
+        }
+        int padding = (width - text.length()) / 2;
+        return " ".repeat(padding) + text + " ".repeat(width - padding - text.length());
+    }
+
+    private List<String> wrapText(String text, int width) {
+        List<String> wrapped = new ArrayList<>();
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
-        int currentLine = 0;
 
         for (String word : words) {
-            if (line.length() + word.length() <= width) {
-                if (!line.isEmpty()) line.append(" ");
+            if (line.length() + word.length() + 1 <= width) {
+                if (!line.isEmpty()) {
+                    line.append(" ");
+                }
                 line.append(word);
             } else {
-                wrapped[currentLine++] = centerAlignText(line.toString(), width);
+                wrapped.add(line.toString());
                 line = new StringBuilder(word);
-                if (currentLine >= maxLines) break;
             }
         }
-        if (currentLine < maxLines) wrapped[currentLine++] = centerAlignText(line.toString(), width);
-        while (currentLine < maxLines) wrapped[currentLine++] = " ".repeat(width);
+
+        if (!line.isEmpty()) {
+            wrapped.add(line.toString());
+        }
 
         return wrapped;
     }
 
-    private String centerAlignText(String text, int width) {
-        int padding = Math.max(0, (width - text.length()) / 2);
-        return " ".repeat(padding) + text + " ".repeat(width - padding - text.length());
-    }
 
     private String getColorForSquare(Square square, int index, int totalSquares, int sideLength) {
         String name = square.getName().toLowerCase();

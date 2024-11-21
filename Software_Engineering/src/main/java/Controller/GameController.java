@@ -77,7 +77,7 @@ public class GameController {
 
     private static Board selectOrCustomizeBoard(Scanner scanner, Display view) {
         int choice = getValidatedIntegerInput(scanner,
-                "Would you like to: 1. Use Default Board 2. Load Saved Board 3. Customize Board: ",
+                "\nWould you like to: \n1.Use Default Board \n2.Load Saved Board \n3.Customize Board\nEnter a number between 1 and 3: ",
                 1, 3);
 
         switch (choice) {

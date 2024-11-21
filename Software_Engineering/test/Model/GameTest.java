@@ -65,6 +65,20 @@ class GameTest {
     }
 
     @Test
+    void testLandingOnFreeParkingSquare() {
+        Player ilyas = players.get(0); // Get the first player
+        int initialMoney = ilyas.getMoney(); // Save the initial money
+
+        ilyas.setPosition(10); // Set the position to "Free Parking" (assuming index 10 is Free Parking)
+        board.getSquare(ilyas.getPosition()).landOn(ilyas); // Simulate landing on Free Parking
+
+        // Validate no change in money or other states
+        assertEquals(initialMoney, ilyas.getMoney(), "Ilyas's money should remain unchanged after landing on Free Parking.");
+        assertEquals(10, ilyas.getPosition(), "Ilyas's position should remain at Free Parking.");
+    }
+
+
+    @Test
     void testLandingOnIncomeTaxSquare() {
         Player ilyas = players.get(0);
         ilyas.setPosition(3); // Income Tax Square
@@ -103,6 +117,28 @@ class GameTest {
         assertEquals(1, game.getPlayers().size(), "Only Brian should remain after Ilyas's bankruptcy.");
         assertEquals("Brian", game.getPlayers().get(0).getName(), "Brian should be the remaining player.");
     }
+
+    @Test
+    void testPlayerBankruptcyReleasesProperties() {
+        PropertySquare property1 = new PropertySquare("Central", 800, 100);
+        PropertySquare property2 = new PropertySquare("Wan Chai", 700, 90);
+        board.getSquares().set(1, property1);
+        board.getSquares().set(2, property2);
+
+        property1.buyProperty(players.get(0));
+        property2.buyProperty(players.get(0));
+        assertEquals(players.get(0), property1.getOwner(), "Ilyas should own Central.");
+        assertEquals(players.get(0), property2.getOwner(), "Ilyas should own Wan Chai.");
+
+        players.get(0).setMoney(-100);
+        game.checkBankruptcy();
+
+        assertNull(property1.getOwner(), "Central should be unowned after Ilyas's bankruptcy.");
+        assertNull(property2.getOwner(), "Wan Chai should be unowned after Ilyas's bankruptcy.");
+    }
+
+
+
 
     @Test
     void testWinnerByMoney() {
