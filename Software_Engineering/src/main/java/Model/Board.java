@@ -7,9 +7,9 @@ import java.util.List;
 
 public class Board implements Serializable {
     @Serial
-    private static final long serialVersionUID = 1L; // Recommended for Serializable classes
+    private static final long serialVersionUID = 1L;
 
-    private List<Square> squares;
+    private final List<Square> squares;
 
     public Board() {
         squares = new ArrayList<>();
@@ -49,7 +49,8 @@ public class Board implements Serializable {
     }
 
     public Square getSquare(int position) {
-        return squares.get(position);
+        int wrappedPosition = (position % squares.size() + squares.size()) % squares.size();
+        return squares.get(wrappedPosition);
     }
 
     public int getTotalSquares() {

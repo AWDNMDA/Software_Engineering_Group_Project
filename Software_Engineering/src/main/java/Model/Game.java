@@ -164,7 +164,7 @@
 
         private String getValidatedInput(String... validOptions) {
             while (true) {
-                String input = scanner.nextLine().trim().toLowerCase();
+                String input = scanner.nextLine().trim();
                 for (String option : validOptions) {
                     if (option.equals(input)) {
                         return input;

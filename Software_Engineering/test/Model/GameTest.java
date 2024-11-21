@@ -2,7 +2,6 @@ package Model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +21,8 @@ class GameTest {
     @BeforeEach
     void setUp() {
         players = new ArrayList<>();
-        players.add(new Player("Alice"));
-        players.add(new Player("Bob"));
+        players.add(new Player("Ilyas"));
+        players.add(new Player("Brian"));
 
         board = new Board();
         mockedRandom = mock(Random.class);
@@ -35,39 +34,42 @@ class GameTest {
     @Test
     void testGameInitialization() {
         assertEquals(2, game.getPlayers().size(), "There should be 2 players at the start.");
-        assertEquals("Alice", game.getCurrentPlayer().getName(), "Alice should be the first player.");
+        assertEquals("Ilyas", game.getCurrentPlayer().getName(), "Ilyas should be the first player.");
         assertNotNull(game.getBoard(), "Board should not be null.");
     }
 
     @Test
     void testPlayerTurnRotation() {
+        when(mockedScanner.nextLine()).thenReturn("no");
+        when(mockedRandom.nextInt(6)).thenReturn(1, 1);
         game.playTurn();
-        assertEquals("Bob", game.getCurrentPlayer().getName(), "Turn should rotate to Bob.");
+        assertEquals("Brian", game.getCurrentPlayer().getName(), "Turn should rotate to Brian.");
         game.playTurn();
-        assertEquals("Alice", game.getCurrentPlayer().getName(), "Turn should rotate back to Alice.");
+        assertEquals("Ilyas", game.getCurrentPlayer().getName(), "Turn should rotate back to Ilyas.");
     }
 
     @Test
     void testPlayerMoves() {
-        when(mockedRandom.nextInt(6)).thenReturn(2, 3); // Dice roll: 3 + 4 = 7
+        when(mockedScanner.nextLine()).thenReturn("no");
+        when(mockedRandom.nextInt(6)).thenReturn(2, 3);
         game.playTurn();
-        assertEquals(7, players.get(0).getPosition(), "Alice's position should be updated after rolling the dice.");
+        assertEquals(7, players.get(0).getPosition(), "Ilyas's position should be updated after rolling the dice.");
     }
 
     @Test
     void testLandingOnGoSquare() {
-        Player alice = players.get(0);
-        alice.setPosition(0); // Go Square
-        board.getSquare(alice.getPosition()).landOn(alice);
-        assertEquals(3000, alice.getMoney(), "Alice should receive HKD 1500 after landing on Go.");
+        Player ilyas = players.get(0);
+        ilyas.setPosition(0); // Go Square
+        board.getSquare(ilyas.getPosition()).landOn(ilyas);
+        assertEquals(3000, ilyas.getMoney(), "Ilyas should receive HKD 1500 after landing on Go.");
     }
 
     @Test
     void testLandingOnIncomeTaxSquare() {
-        Player alice = players.get(0);
-        alice.setPosition(2); // Income Tax Square
-        board.getSquare(alice.getPosition()).landOn(alice);
-        assertTrue(alice.getMoney() < 1500, "Alice's money should decrease due to income tax.");
+        Player ilyas = players.get(0);
+        ilyas.setPosition(3); // Income Tax Square
+        board.getSquare(ilyas.getPosition()).landOn(ilyas);
+        assertEquals(1350, ilyas.getMoney(), "Ilyas's money should decrease due to income tax.");
     }
 
     @Test
@@ -78,54 +80,36 @@ class GameTest {
         when(mockedRandom.nextInt(31)).thenReturn(9); // Amount: (9 + 1) * 10 = 100
         when(mockedRandom.nextBoolean()).thenReturn(true); // Gain money
 
-        Player alice = players.get(0);
-        chanceSquare.landOn(alice);
+        Player ilyas = players.get(0);
+        chanceSquare.landOn(ilyas);
 
-        assertEquals(1600, alice.getMoney(), "Alice's money should increase by HKD 100 after landing on Chance.");
+        assertEquals(1600, ilyas.getMoney(), "Ilyas's money should increase by HKD 100 after landing on Chance.");
     }
 
     @Test
     void testLandingOnGoToJailSquare() {
-        Player alice = players.get(0);
-        alice.setPosition(5); // Go To Jail Square
-        board.getSquare(alice.getPosition()).landOn(alice);
-        assertTrue(alice.isInJail(), "Alice should be in jail after landing on 'Go To Jail'.");
-    }
-
-    @Test
-    void testPlayerInJailRollForDoublesFailure() {
-        Player alice = players.get(0);
-        alice.setInJail(true);
-        when(mockedScanner.nextLine()).thenReturn("F");
-        when(mockedRandom.nextInt(6)).thenReturn(2, 3); // Dice rolls: 3 and 4 (no doubles)
-        game.playTurn();
-        assertTrue(alice.isInJail(), "Alice should remain in jail if no doubles are rolled.");
-    }
-
-    @Test
-    void testPlayerInJailRollForDoublesSuccess() {
-        Player alice = players.get(0);
-        alice.setInJail(true);
-        when(mockedScanner.nextLine()).thenReturn("F");
-        when(mockedRandom.nextInt(6)).thenReturn(1, 1); // Dice rolls: 4 and 4 (doubles)
-        game.playTurn();
-        assertFalse(alice.isInJail(), "Alice should be released from jail after rolling doubles.");
+        Player ilyas = players.get(0);
+        board.getSquare(15).landOn(ilyas); // Go To Jail
+        assertTrue(ilyas.isInJail(), "Ilyas should be in jail after landing on 'Go To Jail'.");
+        assertEquals(5, ilyas.getPosition(), "Ilyas's position should be updated to 'In Jail'.");
     }
 
     @Test
     void testBankruptcy() {
-        Player alice = players.get(0);
-        alice.deductMoney(1600); // Make Alice bankrupt
+        when(mockedScanner.nextLine()).thenReturn("no");
+        Player ilyas = players.get(0);
+        ilyas.deductMoney(1600);
         game.playTurn();
-        assertEquals(1, game.getPlayers().size(), "Only Bob should remain after Alice's bankruptcy.");
+        assertEquals(1, game.getPlayers().size(), "Only Brian should remain after Ilyas's bankruptcy.");
+        assertEquals("Brian", game.getPlayers().get(0).getName(), "Brian should be the remaining player.");
     }
 
     @Test
     void testWinnerByMoney() {
-        players.get(0).addMoney(500); // Alice has more money
+        players.get(0).addMoney(500); // Ilyas has more money
         List<Player> winners = game.getWinner();
         assertEquals(1, winners.size(), "There should be one winner.");
-        assertEquals("Alice", winners.get(0).getName(), "Alice should be the winner.");
+        assertEquals("Ilyas", winners.get(0).getName(), "Ilyas should be the winner.");
     }
 
     @Test
@@ -144,5 +128,53 @@ class GameTest {
             game.playTurn();
         }
         assertTrue(game.isGameOver(), "Game should end after 100 rounds.");
+    }
+
+    @Test
+    void testPlayerInJailRollingDoublesSuccess() {
+        Player ilyas = players.get(0);
+        ilyas.setInJail(true);
+        when(mockedScanner.nextLine()).thenReturn("F");
+        when(mockedRandom.nextInt(6)).thenReturn(3, 3); // Rolling doubles
+        game.playTurn();
+        assertFalse(ilyas.isInJail(), "Ilyas should be out of jail after rolling doubles.");
+    }
+
+    @Test
+    void testPlayerInJailRollingDoublesFailure() {
+        Player ilyas = players.get(0);
+        ilyas.setInJail(true);
+        when(mockedScanner.nextLine()).thenReturn("F");
+        when(mockedRandom.nextInt(6)).thenReturn(1, 2); // No doubles
+        game.playTurn();
+        assertTrue(ilyas.isInJail(), "Ilyas should remain in jail after failing to roll doubles.");
+    }
+
+    @Test
+    void testPlayerPaysFineToExitJail() {
+        Player ilyas = players.get(0);
+        ilyas.setInJail(true);
+        when(mockedScanner.nextLine()).thenReturn("T"); // Pay fine
+        when(mockedRandom.nextInt(6)).thenReturn(3, 4);
+        game.playTurn();
+        assertFalse(ilyas.isInJail(), "Ilyas should be out of jail after paying the fine.");
+        assertEquals(1350, ilyas.getMoney(), "Ilyas's money should decrease by the fine amount.");
+    }
+
+    @Test
+    void testPlayerLandsOnOwnedProperty() {
+        PropertySquare property = new PropertySquare("Central", 800, 100);
+        property.buyProperty(players.get(1)); // Brian owns the property
+        property.landOn(players.get(0)); // Ilyas lands on it
+        assertEquals(1400, players.get(0).getMoney(), "Ilyas should pay rent to Brian.");
+        assertEquals(800, players.get(1).getMoney(), "Brian should receive rent from Ilyas.");
+    }
+
+    @Test
+    void testPlayerLandsOnOwnProperty() {
+        PropertySquare property = new PropertySquare("Central", 800, 100);
+        property.buyProperty(players.get(0)); // Ilyas owns the property
+        property.landOn(players.get(0)); // Ilyas lands on it
+        assertEquals(700, players.get(0).getMoney(), "Ilyas's money should remain unchanged.");
     }
 }

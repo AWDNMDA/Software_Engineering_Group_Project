@@ -143,14 +143,14 @@ public class Display {
             else if (index >= sideLength * 3 + 3 && index <= totalSquares - 1) return BLACK_BACKGROUND + YELLOW_TEXT; // Left
             else if (index >= sideLength * 2 + 2 && index < sideLength * 3 + 3) return BLACK_BACKGROUND + DARK_BLUE_TEXT; // Bottom
         }
-
-        if (name.contains("jail")) return ORANGE_BACKGROUND + BLACK_TEXT;
+        else if (name.contains("jail")) return ORANGE_BACKGROUND + BLACK_TEXT;
         else if (name.contains("go") || name.contains("free parking")) return GREEN_BACKGROUND + BLACK_TEXT;
-        else if (name.contains("shatin") || name.contains("tuen mun") || name.contains("tai po")) return DARK_BLUE_BACKGROUND + BLACK_TEXT;
-        else if (name.contains("shek o") || name.contains("mong kok") || name.contains("tsing yi")) return RED_BACKGROUND + BLACK_TEXT;
-        else if (name.contains("wan chai") || name.contains("central") || name.contains("stanley")) return BLUE_BACKGROUND + BLACK_TEXT;
-        else if (name.contains("sai kung") || name.contains("yuen long") || name.contains("tai o")) return YELLOW_BACKGROUND + BLACK_TEXT;
         else if (name.contains("income tax")) return WHITE_BACKGROUND + BLACK_TEXT;
+
+        if(index >= 0 && index < sideLength + 2) return BLUE_BACKGROUND + BLACK_TEXT;
+        else if (index >= sideLength + 2 && index < sideLength * 2 + 2) return RED_BACKGROUND + BLACK_TEXT;
+        else if (index >= sideLength * 2 + 2 && index < sideLength * 3 + 3) return DARK_BLUE_BACKGROUND + BLACK_TEXT;
+        else if (index >= sideLength * 3 + 3 && index <= totalSquares - 1) return YELLOW_BACKGROUND + BLACK_TEXT;
 
         return RESET;
     }
