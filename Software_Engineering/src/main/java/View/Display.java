@@ -177,6 +177,11 @@ public class Display {
         }
     }
 
+    public void displaySavedBoards() {
+        System.out.println("Displaying all saved boards:");
+        BoardSaver.displayBoards();
+    }
+
     public void displayWinner(List<Player> winners) {
         System.out.println("==================================================");
         if (winners.size() == 1) {

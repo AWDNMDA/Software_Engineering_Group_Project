@@ -1,12 +1,9 @@
 package Controller;
 
-import Model.Board;
-import Model.Game;
-import Model.Player;
+import Model.*;
 import View.Display;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -36,7 +33,7 @@ public class GameController {
             players.add(new Player(name));
         }
 
-        Board board = new Board();
+        Board board = selectOrCustomizeBoard(scanner, view);
         Game game = new Game(players, board);
         GameController controller = new GameController(game, view);
 
@@ -95,5 +92,46 @@ public class GameController {
             }
         }
         return numPlayers;
+    }
+
+    private static Board selectOrCustomizeBoard(Scanner scanner, Display view) {
+        while (true) {
+            System.out.println("Would you like to: 1. Use Default Board 2. Load Saved Board 3. Customize Board");
+            int choice;
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter a number (1-3).");
+                scanner.nextLine(); // Clear invalid input
+                continue;
+            }
+
+            switch (choice) {
+                case 1:
+                    return new Board(); // Default board
+                case 2:
+                    if (BoardSaver.hasSavedBoards()) { // Check if saved boards exist
+                        view.displaySavedBoards();
+                        return BoardSaver.loadBoard(scanner);
+                    } else {
+                        System.out.println("No saved boards available. Using default board.");
+                        return new Board();
+                    }
+                case 3:
+                    Board customBoard = new Board(); // Start with a default board
+                    BoardDesigner boardDesigner = new BoardDesigner();
+                    boardDesigner.customizeBoard(customBoard);
+                    System.out.println("Would you like to save this board? (yes/no)");
+                    if (scanner.nextLine().trim().equalsIgnoreCase("yes")) {
+                        System.out.println("Enter a name for the board:");
+                        String name = scanner.nextLine();
+                        BoardSaver.saveBoard(customBoard, name);
+                    }
+                    return customBoard;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
     }
 }

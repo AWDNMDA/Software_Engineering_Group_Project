@@ -1,7 +1,13 @@
 package Model;
 
-public abstract class Square {
-    private final String name;
+import java.io.Serial;
+import java.io.Serializable;
+
+public abstract class Square implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private String name;
 
     public Square(String name) {
         this.name = name;
@@ -11,5 +17,9 @@ public abstract class Square {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

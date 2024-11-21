@@ -1,8 +1,8 @@
 package Model;
 
 public class PropertySquare extends Square {
-    private final int price;
-    private final int rent;
+    private int price;
+    private int rent;
     private Player owner;
 
     public PropertySquare(String name, int price, int rent) {
@@ -15,6 +15,23 @@ public class PropertySquare extends Square {
     public boolean isOwned() { return owner != null; }
     public Player getOwner() { return owner; }
     public int getPrice() { return price; }
+    public int getRent() { return this.rent; }
+
+    public void setName(String name) { super.setName(name); }
+    public void setPrice(int price) {
+        if (price > 0) {
+            this.price = price;
+        } else {
+            throw new IllegalArgumentException("Price must be greater than 0.");
+        }
+    }
+    public void setRent(int rent) {
+        if (rent > 0) {
+            this.rent = rent;
+        } else {
+            throw new IllegalArgumentException("Rent must be greater than 0.");
+        }
+    }
 
     public void buyProperty(Player player) {
         if (!isOwned() && player.getMoney() >= price) {
@@ -39,5 +56,4 @@ public class PropertySquare extends Square {
             System.out.println("You own this property.");
         }
     }
-
 }
