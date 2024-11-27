@@ -131,10 +131,10 @@ public class Game {
      */
     private void handleJail(Player player) {
         System.out.println(player.getName() + " is in jail.");
+        System.out.println("Press 'T' to pay HKD " + JAIL_FINE + " and get out, or 'F' to roll for doubles.");
 
         if (player.getJailTurns() < 2) {
-            String choice = getValidatedInput("Press 'T' to pay HKD " + JAIL_FINE +
-                    " and get out, or 'F' to roll for doubles.", "T", "F");
+            String choice = getValidatedInput("T", "F");
             if ("T".equals(choice)) {
                 payFineAndMove(player);
             } else {
@@ -265,7 +265,7 @@ public class Game {
      * Handles the player's attempt to roll doubles to get out of jail.
      * If the player rolls doubles (both dice show the same value), they are released from jail,
      * their jail turn counter is reset, and they move forward based on the dice roll.
-     * If they fail to roll doubles, their jail turn counter is incremented.
+     * If they fail to roll doubles, their jail turn counter is incremented
      * @param player The player attempting to roll doubles to get out of jail.
      */
     private void rollForDoubles(Player player) {

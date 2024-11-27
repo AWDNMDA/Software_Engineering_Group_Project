@@ -257,4 +257,18 @@ class GameTest {
         assertEquals(700, players.get(0).getMoney(), "Ilyas's money should remain unchanged.");
     }
 
+    /**
+     * Tests the setName method in the Square class.
+     */
+    @Test
+    void testSetNameForSquare() {
+        Square square = new Square("Old Name") {
+            @Override
+            public void landOn(Player player) {
+            }
+        };
+        square.setName("New Name");
+        assertEquals("New Name", square.getName(), "The square's name should be updated to 'New Name'.");
+    }
+
 }

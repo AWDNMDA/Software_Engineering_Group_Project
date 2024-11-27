@@ -92,8 +92,6 @@ public class BoardSaver {
             System.out.println("No saved boards available. Loading default board.");
             return new Board();
         }
-
-        displayBoards();
         System.out.println("Enter the number of the board to load:");
         int choice = scanner.nextInt();
         scanner.nextLine();
